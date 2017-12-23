@@ -1,6 +1,11 @@
 # 日志配置,使用YAML方便修改配置
 #  loggers, handlers, formatters, filters
 version: 1
+
+log_path1: &normal_log_path /Users/xiaofengfu/Documents/pythonscript/fxf_crawler/my_crawler_normal.log
+log_path2: &productor_log_path /Users/xiaofengfu/Documents/pythonscript/fxf_crawler/my_crawler_productor.log
+log_path3: &consumer_log_path /Users/xiaofengfu/Documents/pythonscript/fxf_crawler/my_crawler_consumer.log
+
 loggers:
     normal_logger:
         handlers: [console,normal_file]
@@ -39,7 +44,7 @@ handlers:
         level: INFO
         formatter: precise
         #filters: [myFilter]
-        filename: ../my_crawler_normal.log
+        filename: *normal_log_path
         when: 'D'
         interval: 1
         delay: true
@@ -50,7 +55,7 @@ handlers:
         level: INFO
         formatter: precise
         #filters: [myFilter]
-        filename: ../my_crawler_productor.log
+        filename: *productor_log_path
         when: 'D'
         interval: 1
         delay: true
@@ -61,7 +66,7 @@ handlers:
         level: INFO
         formatter: precise
         #filters: [myFilter]
-        filename: ../my_crawler_consumer.log
+        filename: *consumer_log_path
         when: 'D'
         interval: 1
         delay: true
