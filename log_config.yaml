@@ -1,0 +1,68 @@
+#  loggers, handlers, formatters, filters
+version: 1
+loggers:
+    normal_logger:
+        handlers: [console,normal_file]
+        level: INFO
+        propagate: true
+        #filters: [myFilter]
+    productor_logger:
+        handlers: [console,productor_file]
+        level: INFO
+        propagate: true
+        #filters: [myFilter]
+    consumer_logger:
+        handlers: [console,consumer_file]
+        level: INFO
+        propagate: true
+        #filters: [myFilter]
+
+formatters:
+    mysimpleformt:
+        format: "%(message)s"
+    precise:
+        format: '%(asctime)s %(levelname)-8s %(name)-15s %(filename)s %(message)s'
+        datefmt: '%Y-%m-%d %H:%M:%S'
+
+#filters:
+    #name: myFilter
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: INFO
+        formatter: mysimpleformt
+        #filters : [myFilter]
+        stream  : ext://sys.stdout
+    normal_file:
+        class: logging.handlers.TimedRotatingFileHandler
+        level: INFO
+        formatter: precise
+        #filters: [myFilter]
+        filename: ../my_crawler_normal.log
+        when: 'D'
+        interval: 1
+        delay: true
+        #maxBytes: 1024
+        #backupCount: 3
+    productor_file:
+        class: logging.handlers.TimedRotatingFileHandler
+        level: INFO
+        formatter: precise
+        #filters: [myFilter]
+        filename: ../my_crawler_productor.log
+        when: 'D'
+        interval: 1
+        delay: true
+        #maxBytes: 1024
+        #backupCount: 3
+    consumer_file:
+        class: logging.handlers.TimedRotatingFileHandler
+        level: INFO
+        formatter: precise
+        #filters: [myFilter]
+        filename: ../my_crawler_consumer.log
+        when: 'D'
+        interval: 1
+        delay: true
+        #maxBytes: 1024
+        #backupCount: 3
