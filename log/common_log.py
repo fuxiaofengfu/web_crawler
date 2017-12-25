@@ -19,6 +19,14 @@ def getLogger(logger_name="normal_logger"):
     return logging.getLogger(logger_name)
 
 
+def getProductorLog():
+    return logging.getLogger("productor_logger")
+
+
+def getConsumerLog():
+    return logging.getLogger("consumer_logger")
+
+
 __log_config_name = "log_config.yaml"
 if __name__ == '__main__':
     __module_path = getattr(sys.modules['__main__'], '__file__', None)

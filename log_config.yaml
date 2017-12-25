@@ -2,9 +2,9 @@
 #  loggers, handlers, formatters, filters
 version: 1
 
-log_path1: &normal_log_path /Users/xiaofengfu/Documents/pythonscript/fxf_crawler/my_crawler_normal.log
-log_path2: &productor_log_path /Users/xiaofengfu/Documents/pythonscript/fxf_crawler/my_crawler_productor.log
-log_path3: &consumer_log_path /Users/xiaofengfu/Documents/pythonscript/fxf_crawler/my_crawler_consumer.log
+log_path1: &normal_log_path /Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_normal.log
+log_path2: &productor_log_path /Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_productor.log
+log_path3: &consumer_log_path /Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_consumer.log
 
 loggers:
     normal_logger:
