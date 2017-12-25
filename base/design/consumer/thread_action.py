@@ -9,13 +9,13 @@ import base.exception.consumer_exception as consumerException
 import log.common_log as log
 import base.design.consumer.action as consumerAction
 
+
 class ConsumerQueueAction(Thread):
 
-    def __init__(self, queue, wait_time=60, max_num=200, thread_name=None):
+    def __init__(self, queue, wait_time=60, thread_name=None):
         super(ConsumerQueueAction, self).__init__(name=thread_name)
         self.q = queue
         self.wait_time = wait_time
-        self.max_num = max_num
 
     def run(self):
 
@@ -34,12 +34,13 @@ class ConsumerQueueAction(Thread):
                 if not action_result and action.max_try_num > action.try_num:
                     self.q.put(action)
                     action.try_num += 1
-                    log.getConsumerLog().error("重试 %s,max_try_num=%s,try_num=%s" \
-                                               % (action.action_str, action.max_try_num, action.try_num))
+                    log.getConsumerLog().info(
+                        "重试 %s,max_try_num=%s,try_num=%s" % (action.action_str, action.max_try_num, action.try_num))
+
                 self.q.task_done()
                 end_time = time.clock()
-                log.getConsumerLog().info("consumer action执行时间%s" % (end_time - begin_time))
+                log.getConsumerLog().info("consumer action:%s;执行时间:%s" % (action.action_str, end_time - begin_time))
             # 睡眠一波
             s = random.randint(0, self.wait_time)
-            log.getConsumerLog().info("ConsumerQueueAction休眠时间:%s,队列里边数量:%s" % (s,que_num))
+            log.getConsumerLog().info("ConsumerQueueAction休眠时间:%s;队列里边数量:%s" % (s,que_num))
             time.sleep(s)
