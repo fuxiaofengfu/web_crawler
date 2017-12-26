@@ -25,23 +25,22 @@ class ConsumerActionImpl(ConsumerAction):
 
     def success(self):
         sql = """
-           update action_queue set finish_time=%(finish_time)s,action_status=2,
-           ip = %(ip)s where id = %(id)s
+           delete from action_queue where id = %(id)s
         """
-        ip = util.getIp()
-        date = util.now()
-        dict_param = {"finish_time": date, "ip": ip, "id": self.sql_id}
+        dict_param = {"id": self.sql_id}
         Mysql().excuteCommit(sql, dict_param)
 
     def fail(self):
         if self.max_try_num > self.try_num:
+            #  action_status=2,在本线程重试次数未完成前防止其它服务器拿到该action执行
             sql = """
-                    update action_queue set finish_time=%(finish_time)s,action_status=1,
+                    update action_queue set finish_time=%(finish_time)s,action_status=2,
                     fail_num=fail_num +1,ip = %(ip)s where id = %(id)s
                   """
         else:
+            #  action_status=1尝试了try_num次数后还是失败,则让其它服务器能拿到该ACTION继续执行
             sql = """
-                    update action_queue set finish_time=%(finish_time)s,action_status=0,
+                    update action_queue set finish_time=%(finish_time)s,action_status=1,
                     ip = %(ip)s where id = %(id)s
                   """
         ip = util.getIp()
