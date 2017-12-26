@@ -32,9 +32,9 @@ class ConsumerActionImpl(ConsumerAction):
 
     def fail(self):
         if self.max_try_num > self.try_num:
-            #  action_status=2,在本线程重试次数未完成前防止其它服务器拿到该action执行
+            #  action_status=0,在本线程重试次数未完成前防止其它服务器拿到该action执行
             sql = """
-                    update action_queue set finish_time=%(finish_time)s,action_status=2,
+                    update action_queue set finish_time=%(finish_time)s,action_status=0,
                     fail_num=fail_num +1,ip = %(ip)s where id = %(id)s
                   """
         else:
