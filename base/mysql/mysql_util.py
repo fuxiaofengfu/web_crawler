@@ -4,12 +4,15 @@
     by xiaofengfu
 """
 import MySQLdb
+from MySQLdb.cursors import *
 from base.mysql.mysql_config import MYSQL_CONFIG
 import log.common_log as log
 
 
 class Mysql:
-
+    """
+      mysql 链接工具类,提供curd
+    """
     def __init__(self):
         self.connection = MySQLdb.connect(
             user=MYSQL_CONFIG.get("user"),
@@ -21,23 +24,39 @@ class Mysql:
             autocommit=MYSQL_CONFIG["autocommit"]
         )
 
-    def queryDict(self, query, params=None):
+    def queryClose(self, query, params=None, cursor_class=DictCursor):
         """
         带参数查询
         :param query:
         :param params:  推荐使用dict类型的,这样可读性最高
+        :param cursor_class:  游标类,这里默认为字典游标
         :return:
         """
         try:
-            cursor = self.connection.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+            cursor = self.connection.cursor(cursorclass=cursor_class)
             cursor.execute(query, params)
             result = cursor.fetchall()
-            cursor.close()
         except:
             log.getLogger().exception("query dict exception .....")
         finally:
             cursor.close()
             self.connection.close()
+        return result
+
+    def queryNotClose(self, query, params=None, cursor_class=DictCursor):
+        """
+        带参数查询
+        :param query:
+        :param params:  推荐使用dict类型的,这样可读性最高
+        :param cursor_class:  游标类,这里默认为字典游标
+        :return:
+        """
+        try:
+            cursor = self.connection.cursor(cursorclass=cursor_class)
+            cursor.execute(query, params)
+            result = cursor.fetchall()
+        except:
+            log.getLogger().exception("query dict exception .....")
         return result
 
     def excuteCommit(self, query, params=None):
@@ -55,6 +74,7 @@ class Mysql:
             self.connection.rollback()
             log.getLogger().exception("excute commit exception .....")
         finally:
+            cursor.close()
             self.connection.close()
 
     def excuteNotCommit(self, query, params):
@@ -68,6 +88,7 @@ class Mysql:
             cursor = self.connection.cursor()
             cursor.execute(query, params)
         except:
+            cursor.close()
             log.getLogger().exception("excute not commit exception .....")
             self.connection.rollback()
 

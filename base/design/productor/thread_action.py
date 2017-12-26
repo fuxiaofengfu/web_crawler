@@ -15,16 +15,16 @@ class ProductorThreadAction(Thread):
       生产者线程
       用于多线程在队列中存入消费者行为
     """
-    def __init__(self, queque, action, wait_time=60, max_num=10000, thread_name=None):
+    def __init__(self, queue, action, wait_time=60, max_num=10000, thread_name=None):
         """
-        :param queque: 队列对象
+        :param queue: 队列对象
         :param wait_time: 每隔多久放一次,最大时间,单位s,随机在0 - wait_time之间
         :param max_num: 一次放入到队列最多action数
         :param thread_name: 线程名称
         :param action: 生产者对象
         """
         super(ProductorThreadAction, self).__init__(name=thread_name)
-        self.q = queque
+        self.q = queue
         self.wait_time = wait_time
         self.max_num = max_num
         self.action = action

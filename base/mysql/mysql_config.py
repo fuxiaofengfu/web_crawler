@@ -4,10 +4,10 @@
     by xiaofengfu
 """
 
-MYSQL_CONFIG = {"user": "mysql",
-                "passwd": "12345678",
-                "host": "192.168.88.195",
-                "port": 5506,
+MYSQL_CONFIG = {"user": "root",
+                "passwd": "123456",
+                "host": "127.0.0.1",
+                "port": 3306,
                 "db": "hainiureport",
                 "charset": "utf8",
                 # "ssl": "false",
