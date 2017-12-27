@@ -5,7 +5,7 @@
 """
 from MySQLdb.cursors import *
 
-import base.design.util.common_util as util
+import crawler.util.common_util as util
 from base.mysql.mysql_util import Mysql
 
 

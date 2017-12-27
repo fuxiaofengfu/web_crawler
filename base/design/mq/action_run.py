@@ -3,7 +3,7 @@
     create 2017/12/25 21:34
     by xiaofengfu
 """
-import base.design.util.common_util as util
+import crawler.util.common_util as util
 import log.common_log as log
 from base.design.consumer.action import ConsumerAction
 from base.design.mq.action_items import ActionItems
