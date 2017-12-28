@@ -19,3 +19,14 @@ def getIp():
 def now():
     # return time.asctime(time.localtime(time.time()))
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
+
+def dictListContains(dict_list, dict_key, dict_kvalue):
+
+    if not dict_list:
+        return False
+    for item in dict_list:
+        if dict_key in item:
+            if item[dict_key] == dict_kvalue:
+                return True
+    return False

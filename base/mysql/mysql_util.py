@@ -92,6 +92,21 @@ class Mysql:
             log.getLogger().exception("excute not commit exception .....")
             self.connection.rollback()
 
+    def excuteManyCommit(self, query, params):
+        """
+        :param query:
+        :param params: 参数建议同  queryDict
+        :return:
+        """
+        try:
+            self.connection.begin()
+            cursor = self.connection.cursor()
+            cursor.executemany(query, params)
+            self.commit()
+        except:
+            self.connection.rollback()
+            log.getLogger().exception("excute commit exception .....")
+
     def commit(self):
         """
         提交事务动作
