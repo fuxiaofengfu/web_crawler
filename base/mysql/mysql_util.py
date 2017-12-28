@@ -104,3 +104,6 @@ class Mysql:
             self.connection.rollback()
         finally:
             self.connection.close()
+
+    def getConnection(self):
+        return self.connection
