@@ -51,11 +51,11 @@ class MyCrawler:
         now = util.now()
         insert_action_queue = """
            insert into action_queue (action_str,try_num,create_time) 
-           VALUES (%(action_str)s,%(try_num)s,%(create_time))
+           VALUES (%(action_str)s,%(try_num)s,%(create_time)s)
         """
         insert_values = []
         for item in web_url_table_items:
-            ids.append(item["id"])
+            ids.append(str(item["id"]))
             action_str = "/usr/bin/python action_crawler.py "+item["url"]+" "+item["title"]+" "+item["file_path"]
             insert_values.append({
                 "action_str": action_str,
@@ -97,7 +97,7 @@ class MyCrawler:
             "md5": _md5,
             "url_type": "0",
             "used": "0",
-            "file_path": MyCrawler.__WEB_CONTENT_PATH+os.sep+html_util.getMd5URL(seedurl)+".png",
+            "file_path": MyCrawler.__WEB_CONTENT_PATH+os.sep+html_util.getMd5URL(seedurl)+".html",
             "create_time": now,
             "update_time": now
         })

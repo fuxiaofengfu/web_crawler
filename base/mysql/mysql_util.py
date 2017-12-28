@@ -77,7 +77,7 @@ class Mysql:
             cursor.close()
             self.connection.close()
 
-    def excuteNotCommit(self, query, params):
+    def excuteNotCommit(self, query, params=None):
         """
         :param query:
         :param params: 参数建议同  queryDict
