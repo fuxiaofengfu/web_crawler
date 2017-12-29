@@ -5,6 +5,7 @@
 """
 import os
 
+import base.config.common_config as common_config
 import crawler.util.common_util as util
 from base.mysql.mysql_util import Mysql
 from crawler.util.html_util import HtmlURLUtil
@@ -13,10 +14,7 @@ from crawler.util.md5_util import md5
 
 class MyCrawler:
 
-    __WEB_CONTENT_PATH = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content"
-    __TOP_URL = "https://www.douban.com/"
-
-    def __init__(self, url_num=20, mysql=None):
+    def __init__(self, url_num=20):
         self.url_num = url_num
         self.mysql = Mysql()
 
@@ -25,11 +23,11 @@ class MyCrawler:
           select * from web_url_table where used=0 and md5 <> %s
           ORDER BY create_time desc limit 0,%s FOR UPDATE 
         """
-        result = self.mysql.queryNotClose(sql, [md5(MyCrawler.__TOP_URL), self.url_num])
+        result = self.mysql.queryNotClose(sql, [md5(common_config.TOP_URL), self.url_num])
         if result:
             self.parseToActionQueue(result)
         else:
-            url_items = self.saveSeedWebUrlToMysql(MyCrawler.__TOP_URL, "豆瓣")
+            url_items = self.saveSeedWebUrlToMysql(common_config.TOP_URL, "豆瓣")
             return url_items
 
     def parseToActionQueue(self, web_url_table_items):
@@ -57,7 +55,7 @@ class MyCrawler:
         insert_values = []
         for item in web_url_table_items:
             ids.append(str(item["id"]))
-            action_str = "/usr/bin/python action_crawler.py "+item["url"]+" "+item["title"]+" "+item["file_path"]
+            action_str = self.getActionStr(item["url"], item["title"], item["file_path"])
             insert_values.append({
                 "action_str": action_str,
                 "try_num": 3,
@@ -69,6 +67,10 @@ class MyCrawler:
             self.mysql.excuteManyCommit(insert_action_queue, insert_values)
         else:
             self.mysql.getConnection().close()
+
+    def getActionStr(self, url, title, save_path):
+        py_path = os.path.dirname(__file__)+".action_crawler.py"
+        return "%s %s %s %s %s" % (common_config.PYTHON_PATH, py_path, url, title, save_path)
 
     def saveSeedWebUrlToMysql(self, seedurl, title="种子链接"):
         """
@@ -98,7 +100,7 @@ class MyCrawler:
             "md5": _md5,
             "url_type": "0",
             "used": "0",
-            "file_path": MyCrawler.__WEB_CONTENT_PATH+os.sep+html_util.getMd5URL(seedurl)+".html",
+            "file_path": common_config.CRAWLER_SAVE_PATH+os.sep+html_util.getMd5URL(seedurl)+".html",
             "create_time": now,
             "update_time": now
         })
@@ -123,7 +125,7 @@ class MyCrawler:
                         "md5": sub_md5,
                         "url_type": 0 if hsn == html_util.getTLD(sub_url) else 1,
                         "used": "0",
-                        "file_path": MyCrawler.__WEB_CONTENT_PATH + os.sep + html_util.getMd5URL(sub_url)+".png",
+                        "file_path": common_config.CRAWLER_SAVE_PATH + os.sep + html_util.getMd5URL(sub_url)+".png",
                         "create_time": now,
                         "update_time": now
                     })

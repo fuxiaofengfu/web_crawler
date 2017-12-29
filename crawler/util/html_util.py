@@ -3,6 +3,7 @@
     create 2017/12/27 14:20
     by xiaofengfu
 """
+import re
 import sys
 import urllib
 import urlparse
@@ -10,7 +11,6 @@ import urlparse
 import tld
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.phantomjs.webdriver import WebDriver
-import re
 
 import crawler.util.md5_util as md5_util
 import crawler.util.sort_util as sort_util

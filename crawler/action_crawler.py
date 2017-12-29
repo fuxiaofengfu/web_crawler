@@ -15,7 +15,7 @@ if __name__ == "__main__":
       爬取链接动作,供消费者(ConsumerAction)调用
       sys.argv = ['/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler/action_crawler.py', 
       'http://xclient.info/', 
-      'mac\xe5\xba\x94\xe7\x94\xa8', 
+      'ma精品应用', 
       '/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content/2e7f5eeeb04.html']
     """
     if not sys.argv:

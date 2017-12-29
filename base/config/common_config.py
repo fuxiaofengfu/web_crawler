@@ -3,8 +3,10 @@
     create 2017/12/22 19:01
     by xiaofengfu
 """
-__WEB_CONTENT_PATH = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content"
-__TOP_URL = "https://www.douban.com/"
+CRAWLER_SAVE_PATH = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content"
+TOP_URL = "https://www.douban.com/"
+PYTHON_PATH = "/usr/bin/python"
+# ROOT_PATH = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler"
 
 MYSQL_CONFIG = {"user": "root",
                 "passwd": "123456",

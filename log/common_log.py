@@ -6,7 +6,10 @@
 """
 import logging
 import logging.config as log_config
-import yaml, os, sys
+import os
+import sys
+
+import yaml
 
 
 def getLogger(logger_name="normal_logger"):

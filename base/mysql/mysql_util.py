@@ -5,7 +5,8 @@
 """
 import MySQLdb
 from MySQLdb.cursors import *
-from base.mysql.mysql_config import MYSQL_CONFIG
+
+import base.config.common_config as common_config
 import log.common_log as log
 
 
@@ -15,13 +16,13 @@ class Mysql:
     """
     def __init__(self):
         self.connection = MySQLdb.connect(
-            user=MYSQL_CONFIG.get("user"),
-            passwd=MYSQL_CONFIG.get("passwd"),
-            host=MYSQL_CONFIG.get("host"),
-            port=MYSQL_CONFIG.get("port"),
-            db=MYSQL_CONFIG.get("db"),
-            charset=MYSQL_CONFIG.get("charset"),
-            autocommit=MYSQL_CONFIG["autocommit"]
+            user=common_config.MYSQL_CONFIG.get("user"),
+            passwd=common_config.MYSQL_CONFIG.get("passwd"),
+            host=common_config.MYSQL_CONFIG.get("host"),
+            port=common_config.MYSQL_CONFIG.get("port"),
+            db=common_config.MYSQL_CONFIG.get("db"),
+            charset=common_config.MYSQL_CONFIG.get("charset"),
+            autocommit=common_config.MYSQL_CONFIG["autocommit"]
         )
 
     def queryClose(self, query, params=None, cursor_class=DictCursor):

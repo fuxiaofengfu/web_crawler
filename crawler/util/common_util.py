@@ -5,6 +5,7 @@
 """
 import socket
 import time
+import os
 
 
 def getIp():
@@ -30,3 +31,7 @@ def dictListContains(dict_list, dict_key, dict_kvalue):
             if item[dict_key] == dict_kvalue:
                 return True
     return False
+
+
+def getModuleParentPath(module_name):
+    return os.path.dirname(module_name.__file__)
