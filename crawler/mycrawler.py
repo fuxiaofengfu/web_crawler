@@ -175,6 +175,7 @@ if __name__ == "__main__":
     my_crawler = MyCrawler()
     my_crawler.action()
 
+
 def test():
     command = "/usr/bin/python "
     py_path = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler/action_crawler.py "
