@@ -18,7 +18,7 @@ if __name__ == "__main__":
       'ma精品应用', 
       '/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content/2e7f5eeeb04.html']
     """
-    if not sys.argv:
+    if not sys.argv or len(sys.argv) <= 3:
         raise ConsumberException("请设置需要爬取的url,title,file_path")
 
     html_util = HtmlURLUtil()

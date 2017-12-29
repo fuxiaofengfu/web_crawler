@@ -67,7 +67,7 @@ class MyCrawler:
             action_str = self.getActionStr(item["url"], item["title"], item["file_path"])
             insert_values.append({
                 "action_str": action_str,
-                "try_num": 3,
+                "try_num": common_config.ACTION_TRY_NUM,
                 "create_time": now
             })
         if insert_values:

@@ -16,6 +16,7 @@ PRODUCTOR_THREAD_NUM = 20  # 生产者线程数
 PRODUCTOR_THREAD_SLEEP = 60  # 生产者单个线程随机睡眠时间最大值0-60
 CONSUMER_THREAD_NUM = 50  # 消费者线程数
 CONSUMER_THREAD_SLEEP = 60  # 消费者单个线程随机睡眠最大时间,0-60
+ACTION_TRY_NUM = 3  # 单一action失败重试次数默认值,如果每个action重试不同,需要修改数据库或者在业务里边设置
 
 # 数据库配置
 MYSQL_CONFIG = {"user": "root",

@@ -31,3 +31,19 @@ CREATE TABLE `web_url_table` (
   PRIMARY KEY (`id`),
   KEY `md5` (`md5`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- hive表
+CREATE external table crawler_content(
+  url string,
+  title string,
+  content_charset string,
+  referer string,
+  hostname string,
+  content_md5 string,
+  content string,
+  create_time date
+)
+partitioned by (dt string, daystr string)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY '\001'
+stored as TEXTFILE
+location '/user/fuxiaofeng/crawler/data'
