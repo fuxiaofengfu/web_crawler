@@ -7,6 +7,7 @@ import os
 
 import base.config.common_config as common_config
 import crawler.util.common_util as util
+import log.common_log as log
 from base.mysql.mysql_util import Mysql
 from crawler.util.html_util import HtmlURLUtil
 from crawler.util.md5_util import md5
@@ -17,6 +18,7 @@ class MyCrawler:
     def __init__(self, url_num=20):
         self.url_num = url_num
         self.mysql = Mysql()
+        self.html_util = None
 
     def action(self):
         """
@@ -96,55 +98,82 @@ class MyCrawler:
         params = []
         now = util.now()
         _md5 = md5(seedurl)
-        html_util = HtmlURLUtil()
-        params.append({
-            "url": seedurl,
-            "title": title,
-            "content_type": "utf-8",
-            "referer": seedurl,
-            "hostname": html_util.getTLD(seedurl),
-            "params": html_util.getSortQS(seedurl),
-            "md5": _md5,
-            "url_type": "0",
-            "used": "0",
-            "file_path": common_config.CRAWLER_SAVE_PATH+os.sep+html_util.getMd5URL(seedurl)+".html",
-            "create_time": now,
-            "update_time": now
-        })
-        douban = html_util.getHtml(seedurl)
-        html_util.writeWebContentToFile(douban, params[0]["file_path"])
-        eles = html_util.getElementsByTagName("a")
-        hsn = html_util.getTLD(seedurl)
-        if eles:
-            for el in eles:
-                sub_url = el.get_attribute('href')
-                if sub_url.count("javascript"):
-                    continue
-                sub_md5 = md5(sub_url)
-                if not util.dictListContains(params, "md5", sub_md5):
-                    params.append({
-                        "url": sub_url,
-                        "title": html_util.driver.title,
-                        "content_type": html_util.getCharset(),
-                        "referer": seedurl,
-                        "hostname": html_util.getTLD(sub_url),
-                        "params": str(html_util.getSortQS(sub_url)),
-                        "md5": sub_md5,
-                        "url_type": 0 if hsn == html_util.getTLD(sub_url) else 1,
-                        "used": "0",
-                        "file_path": common_config.CRAWLER_SAVE_PATH + os.sep + html_util.getMd5URL(sub_url)+".png",
-                        "create_time": now,
-                        "update_time": now
-                    })
-        print params
-        self.mysql.excuteManyCommit(sql, params)
+        self.html_util = html_util = HtmlURLUtil()
+        try:
+            params.append({
+                "url": seedurl,
+                "title": title,
+                "content_type": "utf-8",
+                "referer": seedurl,
+                "hostname": html_util.getTLD(seedurl),
+                "params": html_util.getSortQS(seedurl),
+                "md5": _md5,
+                "url_type": "0",
+                "used": "0",
+                "file_path": common_config.CRAWLER_SAVE_PATH+os.sep+html_util.getMd5URL(seedurl)+".html",
+                "create_time": now,
+                "update_time": now
+            })
+            douban = html_util.getHtml(seedurl)
+            # html_util.writeWebContentToFile(douban, params[0]["file_path"])
+            # 追加到爬取内容的文件中
+            self.appendContentToFile(seedurl, title, seedurl, douban, params[0]["file_path"])
+            # 查找该页面下的所有的a标签
+            eles = html_util.getElementsByTagName("a")
+            hsn = html_util.getTLD(seedurl)
+            _charset = html_util.getCharset(douban)
+            if eles:
+                for el in eles:
+                    sub_url = el.get_attribute('href')
+                    if sub_url.count("javascript"):
+                        continue
+                    sub_md5 = md5(sub_url)
+                    if not util.dictListContains(params, "md5", sub_md5):
+                        params.append({
+                            "url": sub_url,
+                            "title": html_util.driver.title,
+                            "content_type": _charset,
+                            "referer": seedurl,
+                            "hostname": html_util.getTLD(sub_url),
+                            "params": str(html_util.getSortQS(sub_url)),
+                            "md5": sub_md5,
+                            "url_type": 0 if hsn == html_util.getTLD(sub_url) else 1,
+                            "used": "0",
+                            "file_path": common_config.CRAWLER_SAVE_PATH + os.sep + html_util.getMd5URL(sub_url)+".png",
+                            "create_time": now,
+                            "update_time": now
+                        })
+            self.mysql.excuteManyCommit(sql, params)
+        except:
+            log.getLogger().exception("mycrawler saveSeedWebUrlToMysql ...")
+        finally:
+            html_util.closeWebDriver()
         return params
+
+    def appendContentToFile(self, url, title, referer, content, file_path):
+        if not self.html_util:
+            self.html_util = HtmlURLUtil()
+        content_charset = self.html_util.getCharset(content)
+        hostname = self.html_util.getTLD(url)
+        create_time = util.now()
+        content = util.convertOneLine(content)
+        content_md5 = md5(content)
+        strlist = []
+        strlist.append(url)
+        strlist.append(title)
+        strlist.append(referer)
+        strlist.append(hostname)
+        strlist.append(content_charset)
+        strlist.append(content_md5)
+        strlist.append(create_time)
+        strlist.append(content)
+        _str = "\001".join(strlist)
+        self.html_util.writeWebContentToFile(_str, file_path)
 
 
 if __name__ == "__main__":
     my_crawler = MyCrawler()
     my_crawler.action()
-
 
 def test():
     command = "/usr/bin/python "

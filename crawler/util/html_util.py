@@ -123,7 +123,7 @@ class HtmlURLUtil:
         reload(sys)
         sys.setdefaultencoding("utf-8")
         try:
-            f = open(filepath, "w")
+            f = open(filepath, "a")
             f.write(webcontent)
             f.flush()
         except:
@@ -131,11 +131,11 @@ class HtmlURLUtil:
         finally:
             f.close()
 
-    def getCharset(self):
+    def getCharset(self, content):
 
         charset = "utf-8"
         m = re.compile('<meta .*(http-equiv="?Content-Type"?.*)?charset="?([a-zA-Z0-9_-]+)"?', re.I)\
-            .search(self.driver.page_source)
+            .search(content)
         if m and m.lastindex == 2:
             charset = m.group(2).lower()
         return charset

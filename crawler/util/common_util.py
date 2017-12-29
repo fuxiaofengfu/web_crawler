@@ -35,3 +35,14 @@ def dictListContains(dict_list, dict_key, dict_kvalue):
 
 def getModuleParentPath(module_name):
     return os.path.dirname(module_name.__file__)
+
+
+def convertOneLine(_str):
+    """
+    将给定的字符串转为一行
+    :param _str:
+    :return:
+    """
+    if not _str:
+        return
+    return _str.replace('\n', '').replace('\r\n', '')
