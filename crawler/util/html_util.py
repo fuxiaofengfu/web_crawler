@@ -46,10 +46,10 @@ class HtmlURLUtil:
             my_dc["browserName"] = "chrome"
             my_dc["platform"] = "mac"
             my_dc["version"] = "63.0.3239.84"
-            my_dc["phantomjs.page.settings.loadImages"] = True
+            my_dc["phantomjs.page.settings.loadImages"] = False
             my_dc["phantomjs.page.settings.userAgent"] = HtmlURLUtil.__USER_AGENT
 
-            service_args = ["--load-images=true", "--disk-cache=false",
+            service_args = ["--load-images=false", "--disk-cache=false",
                             "--ignore-ssl-errors=true"]
             # "--webdriver-logfile=webdriver.log","--webdriver-loglevel=INFO"
             for head, value in self.headers.iteritems():
