@@ -24,16 +24,21 @@ if __name__ == "__main__":
 
     log.getLogger().info(sys.argv)
 
-    if not sys.argv or len(sys.argv) <= 3:
-        raise ConsumberException("请设置需要爬取的url,title,referer")
+    try:
+        if not sys.argv or len(sys.argv) <= 3:
+            raise ConsumberException("请设置需要爬取的url,title,referer")
 
-    html_util = HtmlURLUtil()
-    # url, title, referer, save_path
-    url = sys.argv[1]
-    title = sys.argv[2]
-    referer = sys.argv[3]
+        html_util = HtmlURLUtil()
+        # url, title, referer, save_path
+        url = sys.argv[1]
+        title = sys.argv[2]
+        referer = sys.argv[3]
 
-    html_result = html_util.getHtml(url)
-    my_crawler = MyCrawler()
-    my_crawler.appendContentToFile(url, title, referer, html_result, common_log.CRAWLER_SAVE_PATH)
-    my_crawler.saveSeedWebUrlToMysql(url, title)
+        html_result = html_util.getHtml(url)
+        my_crawler = MyCrawler()
+        my_crawler.appendContentToFile(url, title, referer, html_result, common_log.CRAWLER_SAVE_PATH)
+        my_crawler.saveSeedWebUrlToMysql(url, title)
+    except:
+        log.getLogger().exception("action_crawler exception...")
+        exit(123)
+    exit(0)

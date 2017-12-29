@@ -168,7 +168,7 @@ class MyCrawler:
         strlist.append(create_time)
         strlist.append(content)
         _str = "\001".join(strlist)
-        self.html_util.writeWebContentToFile(_str, file_path)
+        self.html_util.writeWebContentToFile(_str+"\n", file_path)
 
 
 if __name__ == "__main__":
