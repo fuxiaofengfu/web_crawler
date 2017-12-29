@@ -4,8 +4,6 @@
     by xiaofengfu
 """
 import base.design.mq.action_run as action_run
-import log
-import test
 from crawler.mycrawler import MyCrawler
 
 if __name__ == "__main__":
