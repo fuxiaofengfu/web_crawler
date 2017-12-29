@@ -110,14 +110,14 @@ class MyCrawler:
                 "md5": _md5,
                 "url_type": "0",
                 "used": "0",
-                "file_path": common_config.CRAWLER_SAVE_PATH+os.sep+html_util.getMd5URL(seedurl)+".html",
+                "file_path": common_config.CRAWLER_SAVE_PATH,
                 "create_time": now,
                 "update_time": now
             })
             douban = html_util.getHtml(seedurl)
             # html_util.writeWebContentToFile(douban, params[0]["file_path"])
             # 追加到爬取内容的文件中
-            self.appendContentToFile(seedurl, title, seedurl, douban, params[0]["file_path"])
+            self.appendContentToFile(seedurl, title, seedurl, douban, common_config.CRAWLER_SAVE_PATH)
             # 查找该页面下的所有的a标签
             eles = html_util.getElementsByTagName("a")
             hsn = html_util.getTLD(seedurl)
@@ -139,7 +139,7 @@ class MyCrawler:
                             "md5": sub_md5,
                             "url_type": 0 if hsn == html_util.getTLD(sub_url) else 1,
                             "used": "0",
-                            "file_path": common_config.CRAWLER_SAVE_PATH + os.sep + html_util.getMd5URL(sub_url)+".png",
+                            "file_path": common_config.CRAWLER_SAVE_PATH,
                             "create_time": now,
                             "update_time": now
                         })

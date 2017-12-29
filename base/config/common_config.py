@@ -7,7 +7,7 @@
 # 以下为crawler配置
 
 # 爬取网页内容存放的路径
-CRAWLER_SAVE_PATH = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content"
+CRAWLER_SAVE_PATH = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content/crawler.html"
 TOP_URL = "https://www.douban.com/"  # 入口爬取url
 PYTHON_PATH = "/usr/bin/python"  # python 命令的路径
 
