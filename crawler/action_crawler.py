@@ -5,12 +5,11 @@
 """
 import sys
 
-import log.common_log as log
 import base.config.common_config as common_log
+import log.common_log as log
 from base.exception.consumer_exception import ConsumberException
 from crawler.mycrawler import MyCrawler
 from crawler.util.html_util import HtmlURLUtil
-
 
 if __name__ == "__main__":
     """
@@ -18,7 +17,7 @@ if __name__ == "__main__":
       sys.argv = ['/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler/action_crawler.py', 
       'http://xclient.info/', 
       'ma精品应用', 
-      '/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content/2e7f5eeeb04.html']
+      'referer']
     """
     reload(sys)
     sys.setdefaultencoding("utf-8")
@@ -26,12 +25,15 @@ if __name__ == "__main__":
     log.getLogger().info(sys.argv)
 
     if not sys.argv or len(sys.argv) <= 3:
-        raise ConsumberException("请设置需要爬取的url,title,file_path")
+        raise ConsumberException("请设置需要爬取的url,title,referer")
 
     html_util = HtmlURLUtil()
-    html_result = html_util.getHtml(sys.argv[1])
+    # url, title, referer, save_path
+    url = sys.argv[1]
+    title = sys.argv[2]
+    referer = sys.argv[3]
+
+    html_result = html_util.getHtml(url)
     my_crawler = MyCrawler()
-    # html_util.writeWebContentToFile(html_result, sys.argv[3])
-    my_crawler.appendContentToFile(
-        sys.argv[1], sys.argv[2], sys.argv[1], html_result, common_log.CRAWLER_SAVE_PATH)
-    my_crawler.saveSeedWebUrlToMysql(sys.argv[1], sys.argv[2])
+    my_crawler.appendContentToFile(url, title, referer, html_result, common_log.CRAWLER_SAVE_PATH)
+    my_crawler.saveSeedWebUrlToMysql(url, title)

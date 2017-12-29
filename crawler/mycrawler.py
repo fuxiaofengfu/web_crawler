@@ -64,7 +64,7 @@ class MyCrawler:
         insert_values = []
         for item in web_url_table_items:
             ids.append(str(item["id"]))
-            action_str = self.getActionStr(item["url"], item["title"], item["file_path"])
+            action_str = self.getActionStr(item["url"], item["title"], item["referer"])
             insert_values.append({
                 "action_str": action_str,
                 "try_num": common_config.ACTION_TRY_NUM,
@@ -77,9 +77,9 @@ class MyCrawler:
         else:
             self.mysql.getConnection().close()
 
-    def getActionStr(self, url, title, save_path):
+    def getActionStr(self, url, title, referer):
         py_path = os.path.dirname(__file__)+"/action_crawler.py"
-        return "%s %s %s %s %s" % (common_config.PYTHON_PATH, py_path, url, title, save_path)
+        return "%s %s %s %s %s" % (common_config.PYTHON_PATH, py_path, url, title, referer)
 
     def saveSeedWebUrlToMysql(self, seedurl, title="种子链接"):
         """
