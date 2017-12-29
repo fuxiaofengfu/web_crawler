@@ -31,19 +31,22 @@ class ProductorThreadAction(Thread):
 
     def run(self):
         while True:
-            que_num = self.q.unfinished_tasks
+            try:
+                que_num = self.q.unfinished_tasks
 
-            if que_num <= self.max_num:  # 只有在队列里边的数量小于等于规定的最大值时,才能继续向队列里边放
-                action_items = self.action.action()
+                if que_num <= self.max_num:  # 只有在队列里边的数量小于等于规定的最大值时,才能继续向队列里边放
+                    action_items = self.action.action()
 
-            if action_items:
-                while action_items:
-                    ac = action_items.pop()
-                    if not isinstance(ac, consumerAction.ConsumerAction):
-                        raise consumerException.ConsumberException("ac is not ConsumerAction's instance...")
+                if action_items:
+                    while action_items:
+                        ac = action_items.pop()
+                        if not isinstance(ac, consumerAction.ConsumerAction):
+                            raise consumerException.ConsumberException("ac is not ConsumerAction's instance...")
 
-                    self.q.put(ac)
-            # 放完一波任务休息一波
-            s = random.randint(0, self.wait_time)
-            log.getProductorLog().info("ProductorThreadAction 休眠时间:%s,队列里边任务数量:%s" % (s, que_num))
-            time.sleep(s)
+                        self.q.put(ac)
+                # 放完一波任务休息一波
+                s = random.randint(0, self.wait_time)
+                log.getProductorLog().info("ProductorThreadAction 休眠时间:%s,队列里边任务数量:%s" % (s, que_num))
+                time.sleep(s)
+            except:
+                log.getProductorLog().error("ProductorThreadAction error....")

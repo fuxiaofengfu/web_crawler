@@ -4,6 +4,7 @@
     by xiaofengfu
 """
 import os
+import sys
 
 import base.config.common_config as common_config
 import crawler.util.common_util as util
@@ -88,6 +89,8 @@ if __name__ == "__main__":
     """
        执行任务入口
     """
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
     Run(
         ProductorActionImpl(),
         common_config.CONSUMER_THREAD_NUM,
