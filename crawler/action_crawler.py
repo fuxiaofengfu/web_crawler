@@ -10,7 +10,6 @@ from crawler.mycrawler import MyCrawler
 from crawler.util.html_util import HtmlURLUtil
 
 if __name__ == "__main__":
-
     """
       爬取链接动作,供消费者(ConsumerAction)调用
       sys.argv = ['/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler/action_crawler.py', 
@@ -18,6 +17,8 @@ if __name__ == "__main__":
       'ma精品应用', 
       '/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content/2e7f5eeeb04.html']
     """
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
     if not sys.argv or len(sys.argv) <= 3:
         raise ConsumberException("请设置需要爬取的url,title,file_path")
 

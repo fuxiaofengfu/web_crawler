@@ -78,7 +78,7 @@ class MyCrawler:
             self.mysql.getConnection().close()
 
     def getActionStr(self, url, title, save_path):
-        py_path = os.path.dirname(__file__)+".action_crawler.py"
+        py_path = os.path.dirname(__file__)+"/action_crawler.py"
         return "%s %s %s %s %s" % (common_config.PYTHON_PATH, py_path, url, title, save_path)
 
     def saveSeedWebUrlToMysql(self, seedurl, title="种子链接"):
