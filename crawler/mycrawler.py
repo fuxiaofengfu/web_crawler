@@ -19,6 +19,13 @@ class MyCrawler:
         self.mysql = Mysql()
 
     def action(self):
+        """
+        crawler主入口,保存需要爬取的url到web_url_table表中,
+        并转化到action_queue表中让生产者去取用
+        只有在web_url_table里边没有链接的时候才根据提供的top_url取新的链接
+        该方法使用定时任务或者线程单独调用
+        :return:
+        """
         sql = """
           select * from web_url_table where used=0 and md5 <> %s
           ORDER BY create_time desc limit 0,%s FOR UPDATE 
