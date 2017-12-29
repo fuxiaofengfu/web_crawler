@@ -13,8 +13,8 @@ from base.design.consumer.action import ConsumerAction
 from base.design.mq.action_items import ActionItems
 from base.design.productor.action import ProductorAction
 from base.design.util.run_util import Run
-from base.mysql.mysql_util import Mysql
 from base.exception.consumer_exception import ConsumberException
+from base.mysql.mysql_util import Mysql
 
 
 class ConsumerActionImpl(ConsumerAction):
@@ -85,9 +85,9 @@ class ProductorActionImpl(ProductorAction):
             return consumers
 
 
-if __name__ == "__main__":
+def action_run():
     """
-       执行任务入口
+    执行任务入口
     """
     reload(sys)
     sys.setdefaultencoding("utf-8")
@@ -98,3 +98,7 @@ if __name__ == "__main__":
         common_config.PRODUCTOR_THREAD_NUM,
         common_config.PRODUCTOR_THREAD_SLEEP
     ).work_run()
+
+
+if __name__ == "__main__":
+    action_run()
