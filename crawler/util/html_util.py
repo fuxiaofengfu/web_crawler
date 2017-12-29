@@ -33,7 +33,7 @@ class HtmlURLUtil:
         self.headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Accept-Encoding': '*',
+            # 'Accept-Encoding': '*',
             'Cache-Control': 'max-age=0',
             'User-Agent': HtmlURLUtil.__USER_AGENT,
             'Connection': 'keep-alive',
@@ -50,9 +50,8 @@ class HtmlURLUtil:
             my_dc["phantomjs.page.settings.userAgent"] = HtmlURLUtil.__USER_AGENT
 
             service_args = ["--load-images=true", "--disk-cache=false",
-                            "--ignore-ssl-errors=true", "--webdriver-logfile=webdriver.log",
-                            "--webdriver-loglevel=INFO"]
-
+                            "--ignore-ssl-errors=true"]
+            # "--webdriver-logfile=webdriver.log","--webdriver-loglevel=INFO"
             for head, value in self.headers.iteritems():
                 my_dc["phantomjs.page.customHeaders.{}".format(head)] = value
 
