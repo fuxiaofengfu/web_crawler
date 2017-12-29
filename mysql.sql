@@ -16,20 +16,20 @@ CREATE TABLE `action_queue` (
 DROP TABLE IF EXISTS web_url_table;
 CREATE TABLE `web_url_table` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `url` varchar(1024) DEFAULT NULL COMMENT 'url链接',
-  `title` VARCHAR(255) DEFAULT NULL COMMENT '当前url的title',
-  `content_type` VARCHAR(255) DEFAULT NULL COMMENT '当前url的content_type',
-  `referer` VARCHAR(1024) DEFAULT NULL COMMENT 'url网站来源',
+  `url` varchar(255) DEFAULT NULL COMMENT 'url链接',
+  `title` varchar(255) DEFAULT NULL COMMENT '当前url的title',
+  `content_type` varchar(255) DEFAULT NULL COMMENT '当前url的content_type',
+  `referer` varchar(255) DEFAULT NULL COMMENT 'url网站来源',
   `hostname` varchar(50) DEFAULT NULL COMMENT 'url的host',
   `params` varchar(500) DEFAULT NULL COMMENT '参数',
-  `md5` varchar(50) NOT NULL UNIQUE COMMENT 'url md5值',
+  `md5` varchar(50) NOT NULL COMMENT 'url md5值',
   `url_type` tinyint(4) DEFAULT '0' COMMENT '{0:inter,1:outer}',
   `used` tinyint(4) DEFAULT '0' COMMENT '{0:未使用,1:已使用}',
-  `file_path` VARCHAR(255) DEFAULT NULL COMMENT '爬取数据存储的文件路径',
+  `file_path` varchar(255) DEFAULT NULL COMMENT '爬取数据存储的文件路径',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`),
-  KEY `md5` (`md5`)
+  UNIQUE KEY `md5` (`md5`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- hive表
