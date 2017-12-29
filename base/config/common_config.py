@@ -8,7 +8,7 @@
 
 # 爬取网页内容存放的路径
 CRAWLER_SAVE_PATH = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content/crawler.html"
-TOP_URL = "https://www.douban.com/"  # 入口爬取url
+TOP_URL = "https://www.baidu.com/"  # 入口爬取url
 PYTHON_PATH = "/usr/bin/python"  # python 命令的路径
 
 # 以下为生产者消费者配置

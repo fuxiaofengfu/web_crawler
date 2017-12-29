@@ -13,6 +13,7 @@ from base.design.mq.action_items import ActionItems
 from base.design.productor.action import ProductorAction
 from base.design.util.run_util import Run
 from base.mysql.mysql_util import Mysql
+from base.exception.consumer_exception import ConsumberException
 
 
 class ConsumerActionImpl(ConsumerAction):
@@ -27,6 +28,7 @@ class ConsumerActionImpl(ConsumerAction):
             os.system(self.action_str)
         except:
             log.getLogger().exception("action impl ....action_str:%s" % self.action_str)
+            raise ConsumberException("consumer action exception action_str=%s" % self.action_str)
 
     def success(self):
         sql = """
