@@ -38,7 +38,8 @@ class MyCrawler:
         这里爬取任务(action_queue表的action_str字段)需要单独写脚本,
         example:
         action_str = "/usr/bin/python action_crawler.py crawler_url crawler.title crawler_save_path"
-        在消费者线程中使用sys.system(action_str)调用或者exec
+        在消费者线程中使用os.system(action_str)
+        详见下面test方法
         :param web_url_table_items:
         :return:
         """
@@ -134,3 +135,14 @@ class MyCrawler:
 if __name__ == "__main__":
     my_crawler = MyCrawler()
     my_crawler.action()
+
+
+def test():
+    command = "/usr/bin/python "
+    py_path = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler/action_crawler.py "
+    url = "http://xclient.info/ "
+    title = "mac应用 "
+    save_path = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content/2e7f5eeeb04.html"
+
+    action_str = command + py_path + url + title + save_path
+    os.system(action_str)

@@ -1,0 +1,27 @@
+<html><head></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;"># -*- coding: utf-8 -*-
+"""
+    create 2017/12/28 20:24
+    by xiaofengfu
+"""
+import sys
+
+from base.exception.consumer_exception import ConsumberException
+from crawler.mycrawler import MyCrawler
+from crawler.util.html_util import HtmlURLUtil
+
+if __name__ == "__main__":
+
+    print "ssssssssss====", sys.argv
+
+    """
+      çˆ¬å–é“¾æŽ¥åŠ¨ä½œ,ä¾›æ¶ˆè´¹è€…(ConsumerAction)è°ƒç”¨
+    """
+    if not sys.argv:
+        raise ConsumberException("è¯·è®¾ç½®éœ€è¦çˆ¬å–çš„url,title,file_path")
+
+    html_util = HtmlURLUtil()
+    html_result = html_util.getHtml(sys.argv[0])
+    html_util.writeWebContentToFile(html_result, sys.argv[2])
+    my_crawler = MyCrawler()
+    my_crawler.saveSeedWebUrlToMysql(sys.argv[0], sys.argv[1])
+</pre></body></html>
