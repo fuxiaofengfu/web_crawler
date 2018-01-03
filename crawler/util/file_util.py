@@ -75,7 +75,3 @@ def mergeFile(file_path, new_file, del_old=True):
         log.getLogger().exception("mergeFile ...")
         return False
     return True
-
-
-
-
