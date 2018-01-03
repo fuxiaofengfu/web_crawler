@@ -81,13 +81,8 @@ class HtmlURLUtil:
         获取排序好的query string
         :param url:
         :return:
-
         """
         a = urllib.splitquery(url)
-
-        #  key : [value,value....]
-        # key=1232&key=345
-
         if len(a) <= 1 or not a[1]:
             return None
         qs = urlparse.parse_qs(a[1])

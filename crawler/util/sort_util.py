@@ -21,7 +21,7 @@ def fastSortDict(_dict):
     _list = fastSortList(_list)
     new_list = []
     for key in _list:
-        new_list.append({key:_dict[key]})
+        new_list.append({key: _dict[key]})
     return new_list
 
 
