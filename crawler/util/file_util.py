@@ -47,6 +47,10 @@ def mergeFile(file_path, new_file, del_old=True):
         if os.path.isdir(new_file):
             raise Exception("合并到的文件%s是目录，不能合并" % new_file)
 
+        pdir = os.path.dirname(new_file)
+        if not os.path.exists(pdir):
+            os.makedirs(pdir)
+
         files = os.listdir(file_path)
         try:
             newfile = file(new_file, "a")
