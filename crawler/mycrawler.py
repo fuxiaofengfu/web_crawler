@@ -57,7 +57,8 @@ class MyCrawler:
         except:
             log.getLogger().exception("mycrawler action ...")
         finally:
-            self.mysql.close()
+            # self.mysql.close()
+            pass
 
     def parseToActionQueue(self, web_url_table_items):
         """

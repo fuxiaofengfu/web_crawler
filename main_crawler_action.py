@@ -13,14 +13,16 @@ from crawler.mycrawler import MyCrawler
 class MyCrawlerThread(Thread):
 
     def __init__(self):
+        self.crawler = MyCrawler()
         super(MyCrawlerThread, self).__init__()
 
     def run(self):
         while True:
             try:
-                MyCrawler().action()
+                self.crawler.action()
                 time.sleep(30)
             except:
+                self.crawler.mysql.close()
                 log.getLogger().exception("MyCrawlerThread exception...")
 
 
