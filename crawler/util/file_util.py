@@ -49,10 +49,10 @@ def mergeFile(file_path, new_file, del_old=True):
             newfile = file(new_file, "a")
             while len(files) >= 1:
                 f = files.pop()
+                if f.startswith("."):  # 过滤掉隐藏文件
+                    continue
                 f = file_path + os.sep + f
                 if not os.path.isfile(f):  # 过滤掉目录
-                    continue
-                if f.startswith("."):  # 过滤掉隐藏文件
                     continue
                 if not os.access(f, os.W_OK):  # 文件不可写则忽略该文件
                     continue
