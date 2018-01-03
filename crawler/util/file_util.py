@@ -18,10 +18,13 @@ def mvFile(source_file, des_file):
     :return:
     """
     try:
+        _dir = os.path.dirname(des_file)
+        if not os.path.exists(_dir):
+            os.makedirs(_dir)
         shutil.move(source_file, des_file)
         return True
     except:
-        log.getLogger().exception("mvFile exception ...")
+        log.getLogger().exception("mvFile exception ...%s %s" % (source_file, des_file))
     return False
 
 

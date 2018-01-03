@@ -40,7 +40,6 @@ class Mysql:
         except:
             log.getLogger().exception("query dict exception .....")
         finally:
-            cursor.close()
             self.connection.close()
         return result
 
@@ -67,7 +66,6 @@ class Mysql:
         :return:
         """
         try:
-            self.connection.begin()
             cursor = self.connection.cursor()
             cursor.execute(query, params)
             self.connection.commit()
@@ -85,13 +83,24 @@ class Mysql:
         :return:
         """
         try:
-            self.connection.begin()
             cursor = self.connection.cursor()
             cursor.execute(query, params)
         except:
-            cursor.close()
             log.getLogger().exception("excute not commit exception .....")
             self.connection.rollback()
+
+    def excuteManyNotCommit(self, query, params):
+        """
+        :param query:
+        :param params: 参数建议同  queryDict
+        :return:
+        """
+        try:
+            cursor = self.connection.cursor()
+            cursor.executemany(query, params)
+        except:
+            self.connection.rollback()
+            log.getLogger().exception("excute commit exception .....")
 
     def excuteManyCommit(self, query, params):
         """
@@ -108,18 +117,12 @@ class Mysql:
             self.connection.rollback()
             log.getLogger().exception("excute commit exception .....")
 
-    def commit(self):
+    def close(self):
         """
         提交事务动作
         :return:
         """
         try:
-            self.connection.commit()
-        except:
-            log.getLogger().exception("commit exception .....")
-            self.connection.rollback()
-        finally:
             self.connection.close()
-
-    def getConnection(self):
-        return self.connection
+        except:
+            log.getLogger().exception("close exception .....")

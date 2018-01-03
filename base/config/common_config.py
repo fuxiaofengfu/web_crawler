@@ -7,10 +7,9 @@
 # 以下为crawler配置
 
 # 爬取网页内容存放的路径
-CRAWLER_SAVE_PATH = "/home/fuxiaofeng/crawler/web_content/crawler.html"
-TOP_URL = "https://www.baidu.com/"  # 入口爬取url
-PYTHON_PATH = "/usr/local/bin/python"  # python 命令的路径
-
+CRAWLER_SAVE_PATH = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/web_content"
+PYTHON_PATH = "/usr/bin/python"  # python 命令的路径
+CRAWLER_URL_NUM = 20  # 取种子库和链接库的条数
 # 以下为生产者消费者配置
 PRODUCTOR_THREAD_NUM = 1  # 生产者线程数
 PRODUCTOR_THREAD_SLEEP = 5  # 生产者单个线程随机睡眠时间最大值0-60

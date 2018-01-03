@@ -5,6 +5,7 @@
 """
 import re
 import sys
+import os
 import urllib
 import urlparse
 
@@ -41,6 +42,7 @@ class HtmlURLUtil:
         }
 
     def getHtml(self, url, referer="https://www.baidu.com/"):
+        _result = ""
         try:
             my_dc = DesiredCapabilities.PHANTOMJS.copy()
             my_dc["browserName"] = "chrome"
@@ -70,7 +72,6 @@ class HtmlURLUtil:
             log.getLogger().exception("HtmlURLUtil  getHtml error...")
             # self.driver.close()
             self.driver.quit()
-
         return _result
 
     def closeWebDriver(self):
@@ -96,6 +97,8 @@ class HtmlURLUtil:
         :return:
         """
         try:
+            if not url:
+                return None
             web = urllib.splitquery(url)[0]
             return tld.get_tld(web)
         except:
@@ -122,7 +125,10 @@ class HtmlURLUtil:
         reload(sys)
         sys.setdefaultencoding("utf-8")
         try:
-            f = open(filepath, "a")
+            _dir = os.path.dirname(filepath)
+            if not os.path.exists(_dir):
+                os.makedirs(_dir)
+            f = open(filepath, "w")
             f.write(webcontent)
             f.flush()
         except:

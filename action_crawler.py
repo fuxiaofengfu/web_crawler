@@ -3,9 +3,11 @@
     create 2017/12/28 20:24
     by xiaofengfu
 """
+import os
 import sys
 
-import base.config.common_config as common_log
+import base.config.common_config as common_config
+import crawler.util.uuid_util as myuuid
 import log.common_log as log
 from base.exception.consumer_exception import ConsumberException
 from crawler.mycrawler import MyCrawler
@@ -14,10 +16,7 @@ from crawler.util.html_util import HtmlURLUtil
 if __name__ == "__main__":
     """
       爬取链接动作,供消费者(ConsumerAction)调用
-      sys.argv = ['/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler/action_crawler.py', 
-      'http://xclient.info/', 
-      'ma精品应用', 
-      'referer']
+      sys.argv = [py_file_path,url,title,refere]
     """
     reload(sys)
     sys.setdefaultencoding("utf-8")
@@ -36,8 +35,10 @@ if __name__ == "__main__":
 
         html_result = html_util.getHtml(url)
         my_crawler = MyCrawler()
-        my_crawler.appendContentToFile(url, title, referer, html_result, common_log.CRAWLER_SAVE_PATH)
-        my_crawler.saveSeedWebUrlToMysql(url, title)
+
+        file_path = common_config.CRAWLER_SAVE_PATH + os.sep + "tmp" + os.sep + myuuid.getUUID().__str__()
+        my_crawler.appendContentToFile(url, title, referer, html_result, file_path)
+        # my_crawler.saveSeedWebUrlToMysql(url, title)
     except:
         log.getLogger().exception("action_crawler exception...")
         exit(123)

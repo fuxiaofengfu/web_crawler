@@ -7,6 +7,8 @@ import os
 
 import base.config.common_config as common_config
 import crawler.util.common_util as util
+import crawler.util.file_util as file_util
+import crawler.util.uuid_util as myuuid
 import log.common_log as log
 from base.mysql.mysql_util import Mysql
 from crawler.util.html_util import HtmlURLUtil
@@ -28,23 +30,41 @@ class MyCrawler:
         该方法使用定时任务或者线程单独调用
         :return:
         """
+        # 先查找种子库，根据种子库爬取
         sql = """
-          select * from web_url_table where used=0 and md5 <> %s
-          ORDER BY create_time desc limit 0,%s FOR UPDATE 
+           select * from seed_url_table where status=0 
+           ORDER by update_time desc,crawler_num ASC limit 0,%s FOR UPDATE 
         """
-        result = self.mysql.queryNotClose(sql, [md5(common_config.TOP_URL), self.url_num])
-        if result:
-            self.parseToActionQueue(result)
-        else:
-            url_items = self.saveSeedWebUrlToMysql(common_config.TOP_URL, "豆瓣")
-            return url_items
+        try:
+            result = self.mysql.queryNotClose(sql, [self.url_num])
+
+            if result:  # 有种子,则将种子库给放入到web_url_table中
+                for seed in result:
+                    self.saveUrlTableByUrl(seed["url"], seed["content_type"], seed["title"], seed["referer"])
+                    update_crawler_num = """
+                        update seed_url_table set crawler_num = crawler_num + 1,update_time=%s where id=%s
+                    """
+                    self.mysql.excuteNotCommit(update_crawler_num, [util.now(), seed["id"]])
+            # 在web_url_table中选20条放入队列中
+            sql = """
+                      select * from web_url_table where used=0
+                      ORDER BY create_time desc limit 0,%s FOR UPDATE 
+                  """
+            result = self.mysql.queryNotClose(sql, [self.url_num])
+            if result:
+                self.parseToActionQueue(result)
+            self.mysql.connection.commit()
+        except:
+            log.getLogger().exception("mycrawler action ...")
+        finally:
+            self.mysql.close()
 
     def parseToActionQueue(self, web_url_table_items):
         """
         将web_url表的数据给放入action_queue表中，让多线程消费者去执行爬取任务,
         这里爬取任务(action_queue表的action_str字段)需要单独写脚本,
         example:
-        action_str = "/usr/bin/python action_crawler.py crawler_url crawler.title crawler_save_path"
+        action_str = "/usr/bin/python action_crawler.py crawler_url crawler.title referer"
         在消费者线程中使用os.system(action_str)
         详见下面test方法
         :param web_url_table_items:
@@ -73,54 +93,54 @@ class MyCrawler:
         if insert_values:
             sql = sql % ",".join(ids)
             self.mysql.excuteNotCommit(sql)
-            self.mysql.excuteManyCommit(insert_action_queue, insert_values)
-        else:
-            self.mysql.getConnection().close()
+            self.mysql.excuteManyNotCommit(insert_action_queue, insert_values)
 
     def getActionStr(self, url, title, referer):
-        py_path = os.path.dirname(__file__)+"/action_crawler.py"
+        py_path = os.path.dirname(os.path.dirname(__file__))+"/action_crawler.py"
         return "%s %s %s %s %s" % (common_config.PYTHON_PATH, py_path, url, title, referer)
 
-    def saveSeedWebUrlToMysql(self, seedurl, title="种子链接"):
+    def saveUrlTableByUrl(self, url, charset="utf-8", title=None, referer=None):
         """
-        将要爬取的种子链接页面里边的链接放入表中，没有分表分库，简单处理
-        :param seedurl: 种子链接
-        :param title:  标题
+        爬取url并获取到该url页面的所有a标签
+        保存到web_url_table表中
+        :param url:
+        :param charset:
+        :param title:
+        :param referer:
         :return:
         """
         sql = """
             insert into web_url_table (`url`,`title`,`content_type`,`referer`,
-            `hostname`,`params`,`md5`,`url_type`,`used`,`file_path`,`create_time`
+            `hostname`,`params`,`md5`,`url_type`,`used`,`create_time`
             ,`update_time`) VALUES (%(url)s,%(title)s,%(content_type)s,%(referer)s,
-            %(hostname)s,%(params)s,%(md5)s,%(url_type)s,%(used)s,%(file_path)s,
+            %(hostname)s,%(params)s,%(md5)s,%(url_type)s,%(used)s,
             %(create_time)s,%(update_time)s) ON DUPLICATE KEY UPDATE md5=md5
         """
         params = []
         now = util.now()
-        _md5 = md5(seedurl)
+        _md5 = md5(url)
         self.html_util = html_util = HtmlURLUtil()
         try:
             params.append({
-                "url": seedurl,
+                "url": url,
                 "title": title,
-                "content_type": "utf-8",
-                "referer": seedurl,
-                "hostname": html_util.getTLD(seedurl),
-                "params": html_util.getSortQS(seedurl),
+                "content_type": charset,
+                "referer": referer,
+                "hostname": html_util.getTLD(url),
+                "params": html_util.getSortQS(url),
                 "md5": _md5,
                 "url_type": "0",
                 "used": "0",
-                "file_path": common_config.CRAWLER_SAVE_PATH,
                 "create_time": now,
                 "update_time": now
             })
-            douban = html_util.getHtml(seedurl)
-            # html_util.writeWebContentToFile(douban, params[0]["file_path"])
-            # 追加到爬取内容的文件中
-            self.appendContentToFile(seedurl, title, seedurl, douban, common_config.CRAWLER_SAVE_PATH)
+            douban = html_util.getHtml(url)
+            # 写入到文件中
+            file_path = common_config.CRAWLER_SAVE_PATH+os.sep+"tmp"+os.sep+myuuid.getUUID().__str__()
+            self.appendContentToFile(url, title, url, douban, file_path)
             # 查找该页面下的所有的a标签
             eles = html_util.getElementsByTagName("a")
-            hsn = html_util.getTLD(seedurl)
+            hsn = html_util.getTLD(url)
             _charset = html_util.getCharset(douban)
             if eles:
                 for el in eles:
@@ -133,17 +153,16 @@ class MyCrawler:
                             "url": sub_url,
                             "title": html_util.driver.title,
                             "content_type": _charset,
-                            "referer": seedurl,
+                            "referer": url,
                             "hostname": html_util.getTLD(sub_url),
                             "params": str(html_util.getSortQS(sub_url)),
                             "md5": sub_md5,
                             "url_type": 0 if hsn == html_util.getTLD(sub_url) else 1,
                             "used": "0",
-                            "file_path": common_config.CRAWLER_SAVE_PATH,
                             "create_time": now,
                             "update_time": now
                         })
-            self.mysql.excuteManyCommit(sql, params)
+            self.mysql.excuteManyNotCommit(sql, params)
         except:
             log.getLogger().exception("mycrawler saveSeedWebUrlToMysql ...")
         finally:
@@ -169,19 +188,36 @@ class MyCrawler:
         strlist.append(content)
         _str = "\001".join(strlist)
         self.html_util.writeWebContentToFile(_str+"\n", file_path)
+        des_file = common_config.CRAWLER_SAVE_PATH + os.sep + "done"+os.sep + os.path.basename(file_path)
+        file_util.mvFile(file_path, des_file)
 
-
-if __name__ == "__main__":
-    my_crawler = MyCrawler()
-    my_crawler.action()
-
-
-def test():
-    command = "/usr/bin/python "
-    py_path = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler/action_crawler.py "
-    url = "http://xclient.info/ "
-    title = "mac应用 "
-    save_path = "/Users/xiaofengfu/Documents/pythonscript/fxf_crawler/crawler_content/2e7f5eeeb04.html"
-
-    action_str = command + py_path + url + title + save_path
-    os.system(action_str)
+    def saveSeedUrl(self, seedurl, title=None):
+        """
+        保存种子链接,保存到seed_url_table表中
+        :param seedurl:
+        :param title:
+        :return:
+        """
+        sql = """
+                insert into seed_url_table (`url`,`title`,`content_type`,`referer`,
+                `hostname`,`params`,`md5`,`status`,`create_time`
+                ,`update_time`) VALUES (%(url)s,%(title)s,%(content_type)s,%(referer)s,
+                %(hostname)s,%(params)s,%(md5)s,%(status)s,
+                %(create_time)s,%(update_time)s) ON DUPLICATE KEY UPDATE md5=md5
+             """
+        now = util.now()
+        _md5 = md5(seedurl)
+        self.html_util = html_util = HtmlURLUtil()
+        params = {
+            "url": seedurl,
+            "title": title,
+            "content_type": "utf-8",
+            "referer": seedurl,
+            "hostname": html_util.getTLD(seedurl),
+            "params": html_util.getSortQS(seedurl),
+            "md5": _md5,
+            "status": "0",
+            "create_time": now,
+            "update_time": now
+        }
+        self.mysql.excuteCommit(sql, params)
