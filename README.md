@@ -7,3 +7,4 @@ python爬虫项目
     3. 创建表,mysql.sql
     4. 插入爬虫种子seed.py
     5. 启动main_crawler_action.py
+    6. 定时执行merge_crawler_file.py
